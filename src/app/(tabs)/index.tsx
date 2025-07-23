@@ -1,7 +1,11 @@
 import CustomText from "@/components/customText";
 import DashedLine from "@/components/DashedLine";
 import { BORDER_WIDTH, COLORS, PADDING } from "@/constants/constants";
+import { setDepartingFrom, setFlyingTo } from "@/redux/slice/sharedSlice";
+import { RootState } from "@/redux/store";
+
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { ArrowDownUp, Bell, MapPin } from "lucide-react-native";
 import React, { useState } from "react";
 import {
@@ -14,15 +18,25 @@ import {
   ScrollView,
 } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
+import { useDispatch, useSelector } from "react-redux";
 
 const Home = () => {
-  const [tripType, setTripType] = useState("roundtrip");
-  const [fromLocation, setFromLocation] = useState("Surabaya, East Java (SBY)");
-  const [toLocation, setToLocation] = useState("Denpasar, Bali (DPS)");
+  const [tripType, setTripType] = useState("oneway");
+  const { departingFrom, flyingTo } = useSelector(
+    (state: RootState) => state.shared
+  );
+  const dispatch = useDispatch();
 
   const switchDestination = () => {
-    setFromLocation(toLocation);
-    setToLocation(fromLocation);
+    dispatch(setDepartingFrom(flyingTo));
+    dispatch(setFlyingTo(departingFrom));
+  };
+
+  const navigateToSearchAirport = (value: "from" | "to") => {
+    router.navigate({
+      pathname: "/(screens)/searchAirport",
+      params: { value },
+    });
   };
 
   return (
@@ -128,36 +142,65 @@ const Home = () => {
               >
                 <ArrowDownUp size={RFValue(12)} color={"white"} />
               </TouchableOpacity>
-              <View
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => navigateToSearchAirport("from")}
                 style={{
                   backgroundColor: "#f3f2f7",
                   padding: PADDING,
                   paddingHorizontal: PADDING * 2,
                   borderRadius: 100,
                   gap: 4,
+                  height: RFValue(45),
+                  justifyContent: "center",
                 }}
               >
-                <CustomText variant="h8" style={{ opacity: 0.4 }}>
-                  From
-                </CustomText>
-                <CustomText variant="h7">{fromLocation}</CustomText>
-              </View>
-              <View
+                {!departingFrom ? (
+                  <CustomText variant="h6" style={{ opacity: 0.4 }}>
+                    Departing From
+                  </CustomText>
+                ) : (
+                  <>
+                    <CustomText variant="h8" style={{ opacity: 0.4 }}>
+                      From
+                    </CustomText>
+                    <CustomText variant="h7">
+                      {departingFrom.presentation.suggestionTitle}
+                    </CustomText>
+                  </>
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => navigateToSearchAirport("to")}
                 style={{
                   backgroundColor: "#f3f2f7",
                   padding: PADDING,
                   paddingHorizontal: PADDING * 2,
                   borderRadius: 100,
                   gap: 4,
+                  height: RFValue(45),
+                  justifyContent: "center",
                 }}
               >
-                <CustomText variant="h8" style={{ opacity: 0.4 }}>
-                  To
-                </CustomText>
-                <CustomText variant="h7">{toLocation}</CustomText>
-              </View>
+                {!flyingTo ? (
+                  <CustomText variant="h6" style={{ opacity: 0.4 }}>
+                    Flying to
+                  </CustomText>
+                ) : (
+                  <>
+                    <CustomText variant="h8" style={{ opacity: 0.4 }}>
+                      To
+                    </CustomText>
+                    <CustomText variant="h7">
+                      {flyingTo.presentation.suggestionTitle}
+                    </CustomText>
+                  </>
+                )}
+              </TouchableOpacity>
             </View>
 
+            {/* DIVIDER */}
             <View
               style={{
                 flexDirection: "row",
@@ -188,6 +231,92 @@ const Home = () => {
                   borderRadius: 100,
                 }}
               ></View>
+            </View>
+
+            {/* Flight Info */}
+
+            <View style={{ gap: 8 }}>
+              <View style={{ flexDirection: "row", flex: 1, gap: 10 }}>
+                <View
+                  style={{
+                    backgroundColor: "#f3f2f7",
+                    padding: PADDING,
+                    paddingHorizontal: PADDING * 2,
+                    borderRadius: 100,
+                    gap: 4,
+                    flex: 1,
+                  }}
+                >
+                  <CustomText variant="h8" style={{ opacity: 0.4 }}>
+                    Departure Date
+                  </CustomText>
+                  <CustomText variant="h7">Dec 21, 2023</CustomText>
+                </View>
+                {tripType === "roundtrip" && (
+                  <View
+                    style={{
+                      backgroundColor: "#f3f2f7",
+                      padding: PADDING,
+                      paddingHorizontal: PADDING * 2,
+                      borderRadius: 100,
+                      gap: 4,
+                      flex: 1,
+                    }}
+                  >
+                    <CustomText variant="h8" style={{ opacity: 0.4 }}>
+                      Return Date
+                    </CustomText>
+                    <CustomText variant="h7">Dec 21, 2023</CustomText>
+                  </View>
+                )}
+              </View>
+              <View style={{ flexDirection: "row", flex: 1, gap: 10 }}>
+                <View
+                  style={{
+                    backgroundColor: "#f3f2f7",
+                    padding: PADDING,
+                    paddingHorizontal: PADDING * 2,
+                    borderRadius: 100,
+                    gap: 4,
+                    flex: 1,
+                  }}
+                >
+                  <CustomText variant="h8" style={{ opacity: 0.4 }}>
+                    Passengers
+                  </CustomText>
+                  <CustomText variant="h7">2 Seats</CustomText>
+                </View>
+                <View
+                  style={{
+                    backgroundColor: "#f3f2f7",
+                    padding: PADDING,
+                    paddingHorizontal: PADDING * 2,
+                    borderRadius: 100,
+                    gap: 4,
+                    flex: 1,
+                  }}
+                >
+                  <CustomText variant="h8" style={{ opacity: 0.4 }}>
+                    Seat Class
+                  </CustomText>
+                  <CustomText variant="h7">Business</CustomText>
+                </View>
+              </View>
+            </View>
+
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 100,
+                backgroundColor: COLORS.darkBackground,
+                padding: RFValue(12),
+                marginTop: RFValue(10),
+              }}
+            >
+              <CustomText variant="h6" color="white">
+                Search Ticket
+              </CustomText>
             </View>
 
             {/* Today's Flight Section */}

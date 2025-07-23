@@ -8,4 +8,5 @@ export const COLORS = {
 export const screenHeight = Dimensions.get("screen").height;
 export const screenWidth = Dimensions.get("screen").width;
 export const BORDER_WIDTH = StyleSheet.hairlineWidth * 2;
+export const HEADER_HEIGHT = RFValue(40);
 export const PADDING = RFValue(8);
