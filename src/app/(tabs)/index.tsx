@@ -3,6 +3,7 @@ import DashedLine from "@/components/DashedLine";
 import { BORDER_WIDTH, COLORS, PADDING } from "@/constants/constants";
 import { setDepartingFrom, setFlyingTo } from "@/redux/slice/sharedSlice";
 import { RootState } from "@/redux/store";
+import { formatDate } from "@/utils/sharedFunctions";
 
 import { Image } from "expo-image";
 import { router } from "expo-router";
@@ -22,9 +23,10 @@ import { useDispatch, useSelector } from "react-redux";
 
 const Home = () => {
   const [tripType, setTripType] = useState("oneway");
-  const { departingFrom, flyingTo } = useSelector(
-    (state: RootState) => state.shared
-  );
+
+  const { departingFrom, flyingTo, departureDate, returnDate, travelers } =
+    useSelector((state: RootState) => state.shared);
+
   const dispatch = useDispatch();
 
   const switchDestination = () => {
@@ -237,7 +239,16 @@ const Home = () => {
 
             <View style={{ gap: 8 }}>
               <View style={{ flexDirection: "row", flex: 1, gap: 10 }}>
-                <View
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => {
+                    router.navigate({
+                      pathname: "/(screens)/datePicker",
+                      params: {
+                        tripType,
+                      },
+                    });
+                  }}
                   style={{
                     backgroundColor: "#f3f2f7",
                     padding: PADDING,
@@ -250,10 +261,20 @@ const Home = () => {
                   <CustomText variant="h8" style={{ opacity: 0.4 }}>
                     Departure Date
                   </CustomText>
-                  <CustomText variant="h7">Dec 21, 2023</CustomText>
-                </View>
+                  <CustomText variant="h7">
+                    {formatDate(departureDate)}
+                  </CustomText>
+                </TouchableOpacity>
                 {tripType === "roundtrip" && (
-                  <View
+                  <TouchableOpacity
+                    onPress={() => {
+                      router.navigate({
+                        pathname: "/(screens)/datePicker",
+                        params: {
+                          tripType,
+                        },
+                      });
+                    }}
                     style={{
                       backgroundColor: "#f3f2f7",
                       padding: PADDING,
@@ -266,8 +287,10 @@ const Home = () => {
                     <CustomText variant="h8" style={{ opacity: 0.4 }}>
                       Return Date
                     </CustomText>
-                    <CustomText variant="h7">Dec 21, 2023</CustomText>
-                  </View>
+                    <CustomText variant="h7">
+                      {formatDate(returnDate)}
+                    </CustomText>
+                  </TouchableOpacity>
                 )}
               </View>
               <View style={{ flexDirection: "row", flex: 1, gap: 10 }}>
@@ -284,7 +307,7 @@ const Home = () => {
                   <CustomText variant="h8" style={{ opacity: 0.4 }}>
                     Passengers
                   </CustomText>
-                  <CustomText variant="h7">2 Seats</CustomText>
+                  <CustomText variant="h7">{travelers} Seats</CustomText>
                 </View>
                 <View
                   style={{
@@ -299,12 +322,17 @@ const Home = () => {
                   <CustomText variant="h8" style={{ opacity: 0.4 }}>
                     Seat Class
                   </CustomText>
-                  <CustomText variant="h7">Business</CustomText>
+                  <CustomText variant="h7">Economy</CustomText>
                 </View>
               </View>
             </View>
 
-            <View
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => {
+                router.navigate("/(screens)/searchFlightScreen");
+                // router.navigate("/(screens)/flightSeatSelection");
+              }}
               style={{
                 alignItems: "center",
                 justifyContent: "center",
@@ -315,28 +343,9 @@ const Home = () => {
               }}
             >
               <CustomText variant="h6" color="white">
-                Search Ticket
+                Search Flight
               </CustomText>
-            </View>
-
-            {/* Today's Flight Section */}
-            {/* <View style={styles.todayFlightSection}>
-            <View style={styles.todayFlightHeader}>
-              <Text style={styles.todayFlightTitle}>Today's Flight</Text>
-              <TouchableOpacity>
-                <Text style={styles.seeAllText}>See all</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.flightCard}>
-              <View style={styles.airlineBadge}>
-                <Text style={styles.airlineBadgeText}>Citilink</Text>
-              </View>
-              <View style={styles.flightInfo}>
-                <Text style={styles.airlineName}>Lion Air</Text>
-                <Text style={styles.flightDate}>20 December 2023</Text>
-              </View>
-            </View>*/}
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>

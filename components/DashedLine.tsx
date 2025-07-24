@@ -2,7 +2,13 @@ import { StyleSheet, View, ViewStyle } from "react-native";
 import React from "react";
 import { COLORS } from "@/constants/constants";
 
-const DashedLine = ({ style }: { style?: ViewStyle }) => {
+const DashedLine = ({
+  style,
+  backgroundColor,
+}: {
+  style?: ViewStyle;
+  backgroundColor?: string;
+}) => {
   return (
     <View
       style={[
@@ -25,7 +31,7 @@ const DashedLine = ({ style }: { style?: ViewStyle }) => {
           bottom: 0,
           width: "100%",
           height: 1,
-          backgroundColor: "white",
+          backgroundColor: backgroundColor ? backgroundColor : "white",
           zIndex: 1,
         }}
       />

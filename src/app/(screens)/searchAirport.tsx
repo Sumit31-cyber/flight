@@ -140,6 +140,7 @@ const SearchAirport = () => {
                   } else {
                     dispatch(setFlyingTo(item));
                   }
+                  router.back();
                 }}
               />
             );

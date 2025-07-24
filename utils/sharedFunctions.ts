@@ -16,3 +16,11 @@ export function debounce<T extends (...args: any[]) => void>(
     }, delay);
   };
 }
+
+export const formatDate = (dateString: string | number | Date) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+};

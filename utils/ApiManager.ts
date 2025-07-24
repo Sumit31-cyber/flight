@@ -1,6 +1,6 @@
 import { store } from "@/redux/store";
 import axios from "axios";
-import { SearchAirportResponse } from "./types";
+import { FlightSearchResponse, SearchAirportResponse } from "./types";
 
 const BASE_URL = "https://sky-scrapper.p.rapidapi.com";
 const API_KEY = process.env.EXPO_PUBLIC_RAPID_API_KEY;
@@ -16,7 +16,45 @@ const searchAirports = async (query: string, locale = "en-US") => {
       {
         params: { query: query, locale: "en-US" },
         headers: {
-          "x-rapidapi-key": API_KEY, // replace with real key
+          "x-rapidapi-key": API_KEY,
+          "x-rapidapi-host": "sky-scrapper.p.rapidapi.com",
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching airport data:", error);
+  }
+};
+const searchFlight = async (
+  originSkyId: string,
+  destinationSkyId: string,
+  originEntityId: string,
+  destinationEntityId: string,
+  date: string,
+  cabinClass: string,
+  adults: number
+) => {
+  try {
+    const response = await axiosInstance.get<FlightSearchResponse>(
+      "/api/v2/flights/searchFlights",
+      {
+        params: {
+          originSkyId,
+          destinationSkyId,
+          originEntityId,
+          destinationEntityId,
+          date,
+          cabinClass,
+          adults,
+          sortBy: "best",
+          currency: "INR",
+          market: "en-GB",
+          countryCode: "IN",
+        },
+        headers: {
+          "x-rapidapi-key": API_KEY,
           "x-rapidapi-host": "sky-scrapper.p.rapidapi.com",
         },
       }
@@ -28,4 +66,4 @@ const searchAirports = async (query: string, locale = "en-US") => {
   }
 };
 
-export { searchAirports };
+export { searchAirports, searchFlight };
