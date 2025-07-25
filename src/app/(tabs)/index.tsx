@@ -41,6 +41,15 @@ const Home = () => {
     });
   };
 
+  const navigateToDatePicker = () => {
+    router.navigate({
+      pathname: "/(screens)/datePicker",
+      params: {
+        tripType,
+      },
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
@@ -260,14 +269,7 @@ const Home = () => {
               <View style={{ flexDirection: "row", flex: 1, gap: 10 }}>
                 <TouchableOpacity
                   activeOpacity={0.8}
-                  onPress={() => {
-                    router.navigate({
-                      pathname: "/(screens)/datePicker",
-                      params: {
-                        tripType,
-                      },
-                    });
-                  }}
+                  onPress={navigateToDatePicker}
                   style={{
                     backgroundColor: COLORS.darkBackground,
                     padding: PADDING,
@@ -290,14 +292,7 @@ const Home = () => {
                 </TouchableOpacity>
                 {tripType === "roundtrip" && (
                   <TouchableOpacity
-                    onPress={() => {
-                      router.navigate({
-                        pathname: "/(screens)/datePicker",
-                        params: {
-                          tripType,
-                        },
-                      });
-                    }}
+                    onPress={navigateToDatePicker}
                     style={{
                       backgroundColor: COLORS.darkBackground,
                       padding: PADDING,
@@ -321,7 +316,9 @@ const Home = () => {
                 )}
               </View>
               <View style={{ flexDirection: "row", flex: 1, gap: 10 }}>
-                <View
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={navigateToDatePicker}
                   style={{
                     backgroundColor: COLORS.darkBackground,
                     padding: PADDING,
@@ -341,8 +338,10 @@ const Home = () => {
                   <CustomText variant="h7" color="white">
                     {travelers} Seats
                   </CustomText>
-                </View>
-                <View
+                </TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={navigateToDatePicker}
                   style={{
                     backgroundColor: COLORS.darkBackground,
                     padding: PADDING,
@@ -362,7 +361,7 @@ const Home = () => {
                   <CustomText variant="h7" color="white">
                     Economy
                   </CustomText>
-                </View>
+                </TouchableOpacity>
               </View>
             </View>
 

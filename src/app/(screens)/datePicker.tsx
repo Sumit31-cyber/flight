@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
   View,
-  Text,
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
@@ -11,7 +10,7 @@ import {
 import { Calendar } from "react-native-calendars";
 import { COLORS, PADDING } from "@/constants/constants";
 import { AntDesign } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import {
@@ -23,6 +22,7 @@ import { formatDate } from "@/utils/sharedFunctions";
 import { MarkedDates } from "react-native-calendars/src/types";
 import { RFValue } from "react-native-responsive-fontsize";
 import CustomText from "@/components/customText";
+import Header from "@/components/Header";
 
 const CABIN_CLASS = ["Economy", "Premium Economy", "Business", "First"];
 
@@ -41,19 +41,16 @@ const DatePicker = ({}) => {
   const today = new Date();
   const todayString = today.toISOString().split("T")[0];
 
-  // Pre-populate departure date with today's date if not selected
   useEffect(() => {
     if (!departureDate) {
       dispatch(setDepartureDate(todayString));
     }
 
-    // If switching to one-way, clear return date
     if (isOneWay && returnDate) {
       dispatch(setReturnDate(null));
     }
   }, [departureDate, isOneWay, returnDate, dispatch, todayString]);
 
-  // Generate marked dates for calendar
   const getMarkedDates = () => {
     const marked: MarkedDates = {};
 
@@ -80,11 +77,9 @@ const DatePicker = ({}) => {
     const selectedDate = day.dateString;
 
     if (isOneWay) {
-      // For one-way trips, only set departure date
       dispatch(setDepartureDate(selectedDate));
       dispatch(setReturnDate(null));
     } else {
-      // For round trips, handle both departure and return dates
       if (isSelectingDeparture) {
         dispatch(setDepartureDate(selectedDate));
         dispatch(setReturnDate(null));
@@ -117,21 +112,12 @@ const DatePicker = ({}) => {
 
   const getSelectionLabel = () => {
     if (isOneWay) {
-      return "SELECT DEPARTURE DATE";
+      return "Select departure date";
     }
 
     return isSelectingDeparture
-      ? "SELECT DEPARTURE DATE"
-      : "SELECT RETURN DATE";
-  };
-
-  const handleSave = () => {
-    // if (departureDate && (isOneWay || returnDate)) {
-    //   onSave({
-    //     departure: departureDate,
-    //     return: isOneWay ? null : returnDate,
-    //   });
-    // }
+      ? "Select departure date"
+      : "Select return date";
   };
 
   const handleEdit = () => {
@@ -142,15 +128,15 @@ const DatePicker = ({}) => {
     dispatch(setReturnDate(null));
   };
 
-  const canSave = departureDate && (isOneWay || returnDate);
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
         barStyle="light-content"
         backgroundColor={COLORS.darkBackground}
       />
-
+      <View style={{ paddingHorizontal: PADDING }}>
+        <Header title={getSelectionLabel()} />
+      </View>
       <ScrollView>
         <View
           style={{
@@ -159,30 +145,26 @@ const DatePicker = ({}) => {
             padding: PADDING,
           }}
         >
-          <View style={styles.header}>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => router.back()}
-            >
-              <AntDesign name="arrowleft" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
-
           <View style={styles.selectedRangeContainer}>
-            <Text style={styles.selectedRangeLabel}>{getSelectionLabel()}</Text>
             <View style={styles.selectedRangeRow}>
-              <Text style={styles.selectedRangeText}>{formatDateRange()}</Text>
+              <CustomText variant="h4" style={styles.selectedRangeText}>
+                {formatDateRange()}
+              </CustomText>
               {!isOneWay && (
                 <TouchableOpacity
                   onPress={handleEdit}
                   style={styles.editButton}
                 >
-                  <Text style={styles.editText}>Edit</Text>
+                  <CustomText variant="h7" style={styles.editText}>
+                    Edit
+                  </CustomText>
                 </TouchableOpacity>
               )}
             </View>
             {isOneWay && (
-              <Text style={styles.oneWayIndicator}>One-way trip</Text>
+              <CustomText variant="h7" style={styles.oneWayIndicator}>
+                One-way trip
+              </CustomText>
             )}
           </View>
 
@@ -238,7 +220,9 @@ const DatePicker = ({}) => {
               gap: 10,
             }}
           >
-            <Text style={styles.selectedRangeLabel}>TRAVELERS</Text>
+            <CustomText variant="h7" style={styles.selectedRangeLabel}>
+              TRAVELERS
+            </CustomText>
             <View
               style={{
                 flexDirection: "row",
@@ -309,7 +293,9 @@ const DatePicker = ({}) => {
             </View>
           </View>
           <View style={{ gap: 10 }}>
-            <Text style={styles.selectedRangeLabel}>CABIN CLASS</Text>
+            <CustomText variant="h7" style={styles.selectedRangeLabel}>
+              CABIN CLASS
+            </CustomText>
 
             <View style={{ gap: 12, flexDirection: "row", flexWrap: "wrap" }}>
               {CABIN_CLASS.map((item, index) => {
@@ -387,7 +373,6 @@ const styles = StyleSheet.create({
   },
   selectedRangeLabel: {
     color: "#fff",
-    fontSize: 12,
     fontWeight: "600",
     letterSpacing: 1,
     marginBottom: 8,
@@ -399,7 +384,6 @@ const styles = StyleSheet.create({
   },
   selectedRangeText: {
     color: "#ffffff",
-    fontSize: 24,
     fontWeight: "400",
     flex: 1,
   },
@@ -408,12 +392,10 @@ const styles = StyleSheet.create({
   },
   editText: {
     color: "#ffffff",
-    fontSize: 14,
     opacity: 0.7,
   },
   oneWayIndicator: {
     color: "#ffffff",
-    fontSize: 12,
     opacity: 0.6,
     marginTop: 4,
   },

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "flight",
+    "name": "Flight",
     "slug": "flight",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -9,13 +9,18 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/splash-icon.png",
+      "image": "./assets/images/splash-icon-dark.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0c0c0c"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.sumit-bravo.flight"
+      "bundleIdentifier": "com.sumit-bravo.flight",
+      "icon": {
+        "dark": "./assets/images/ios-dark.png",
+        "light": "./assets/images/ios-light.png",
+        "tinted": "./assets/images/ios-tinted.png"
+      }
     },
     "android": {
       "adaptiveIcon": {

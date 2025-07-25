@@ -23,7 +23,6 @@ import {
   PADDING,
   screenHeight,
   seatColumns,
-  unavailableSeats,
 } from "@/constants/constants";
 import { Itinerary } from "@/utils/types";
 import { setMyFlights } from "@/redux/slice/sharedSlice";
@@ -43,7 +42,6 @@ const FlightSeatSelection = () => {
   const getSeatStatus = (row: string, col: string) => {
     const seatId = `${row}${col}`;
     if (occupiedSeats.has(seatId)) return "occupied";
-    if (unavailableSeats.has(seatId)) return "unavailable";
     if (selectedSeats.includes(seatId)) return "selected";
     return "available";
   };
@@ -67,8 +65,6 @@ const FlightSeatSelection = () => {
         return [styles.seat, styles.selectedSeat];
       case "occupied":
         return [styles.seat, styles.occupiedSeat];
-      case "unavailable":
-        return [styles.seat, styles.unavailableSeat];
       default:
         return [styles.seat, styles.availableSeat];
     }
@@ -80,8 +76,6 @@ const FlightSeatSelection = () => {
         return styles.selectedSeatText;
       case "occupied":
         return styles.occupiedSeatText;
-      case "unavailable":
-        return styles.unavailableSeatText;
       default:
         return styles.availableSeatText;
     }
@@ -89,7 +83,7 @@ const FlightSeatSelection = () => {
 
   const renderSeat = (row: string, col: string) => {
     const status = getSeatStatus(row, col);
-    const isDisabled = status === "occupied" || status === "unavailable";
+    const isDisabled = status === "occupied";
 
     return (
       <TouchableOpacity
@@ -424,7 +418,6 @@ const styles = StyleSheet.create({
   availableSeat: {
     backgroundColor: COLORS.darkBackground,
     borderWidth: 1,
-    // borderColor: "#fff",
   },
   selectedSeat: {
     backgroundColor: "#1FD860",
@@ -432,9 +425,7 @@ const styles = StyleSheet.create({
   occupiedSeat: {
     backgroundColor: "#ffd56d",
   },
-  unavailableSeat: {
-    backgroundColor: "#d1d5db",
-  },
+
   availableSeatText: {
     fontSize: 12,
     color: "#fff",
@@ -450,11 +441,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "500",
   },
-  unavailableSeatText: {
-    fontSize: 12,
-    color: "#6b7280",
-    fontWeight: "500",
-  },
+
   bottomSection: {
     marginVertical: 20,
   },
