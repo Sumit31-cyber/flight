@@ -316,7 +316,7 @@ const FlightSeatSelection = () => {
               activeOpacity={0.8}
               onPress={() => {
                 router.navigate({
-                  pathname: "/(screens)/yourFlightDetail",
+                  pathname: "/(protected)/(screens)/yourFlightDetail",
                   params: {
                     flightData: flightData,
                   },

@@ -201,7 +201,7 @@ const SearchFlightScreen = () => {
                   flightData={item}
                   onPress={() => {
                     router.navigate({
-                      pathname: "/(screens)/flightSeatSelection",
+                      pathname: "/(protected)/(screens)/flightSeatSelection",
                       params: {
                         flightData: encodeURIComponent(JSON.stringify(item)),
                       },
