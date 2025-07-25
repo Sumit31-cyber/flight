@@ -11,15 +11,22 @@ import Header from "@/components/Header";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CustomText from "@/components/customText";
 import { useAuth } from "@clerk/clerk-expo";
+import { clearAllPersistedData } from "@/redux/store";
+import { useDispatch } from "react-redux";
+import { clearDataOnLogout } from "@/redux/slice/sharedSlice";
 
 const Profile = () => {
   const { signOut } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleSignout = async () => {
     try {
       setIsLoading(true);
       await signOut();
+      //@ts-ignore
+      dispatch(clearDataOnLogout());
+      clearAllPersistedData();
     } catch (err) {
       setIsLoading(false);
     } finally {

@@ -12,7 +12,7 @@ interface InitialState {
   departureDate: string;
   returnDate: string;
   travelers: number;
-  myFlights: Itinerary[] | null;
+  myFlights: Itinerary[];
 }
 
 const initialState: InitialState = {
@@ -21,7 +21,7 @@ const initialState: InitialState = {
   departureDate: today,
   returnDate: returnDate,
   travelers: 1,
-  myFlights: null,
+  myFlights: [],
 };
 
 const sharedSlice = createSlice({
@@ -51,20 +51,45 @@ const sharedSlice = createSlice({
       }
     },
     setMyFlights: (state, action) => {
-      const existingItemIndex = state.myFlights?.findIndex(
-        (item) => item.id == action.payload.id
-      );
+      // Initialize myFlights as empty array if it doesn't exist
+      if (!state.myFlights) {
+        state.myFlights = [];
+      }
 
-      if (existingItemIndex === -1) {
-        if (state.myFlights) {
-          state.myFlights = [action.payload, ...state.myFlights];
-        } else {
+      if (Array.isArray(action.payload)) {
+        if (state.myFlights.length === 0) {
           state.myFlights = action.payload;
+        } else {
+          action.payload.forEach((newFlight) => {
+            const existingIndex = state.myFlights!.findIndex(
+              (item) => item.id === newFlight.id
+            );
+            if (existingIndex === -1) {
+              state.myFlights!.unshift(newFlight);
+            }
+          });
+        }
+      } else {
+        const existingItemIndex = state.myFlights.findIndex(
+          (item) => item.id === action.payload.id
+        );
+
+        if (existingItemIndex === -1) {
+          state.myFlights.unshift(action.payload);
         }
       }
     },
 
     clearMyFlights: (state, action) => {
+      state.myFlights = [];
+    },
+
+    clearDataOnLogout: (state, action) => {
+      state.departingFrom = null;
+      state.flyingTo = null;
+      state.departureDate = today;
+      state.returnDate = returnDate;
+      state.travelers = 1;
       state.myFlights = [];
     },
   },
@@ -78,6 +103,7 @@ export const {
   updateTravelerCount,
   setMyFlights,
   clearMyFlights,
+  clearDataOnLogout,
 } = sharedSlice.actions;
 
 // Export the reducer
