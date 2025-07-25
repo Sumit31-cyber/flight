@@ -2,10 +2,12 @@ import { reduxPersistStorage } from "@/utils/MMKVStorage";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import sharedReducer from "./slice/sharedSlice";
+import authReducer from "./slice/authSlice";
 
 // Combine reducers
 const rootReducer = combineReducers({
   shared: sharedReducer,
+  auth: authReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -13,7 +15,7 @@ export type RootState = ReturnType<typeof rootReducer>;
 const persistConfig = {
   key: "root",
   storage: reduxPersistStorage,
-  whitelist: [],
+  whitelist: ["shared"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

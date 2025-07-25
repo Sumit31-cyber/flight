@@ -9,11 +9,11 @@ import {
 import { RootState } from "@/redux/store";
 import { formatDate } from "@/utils/sharedFunctions";
 import { MaterialIcons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { ArrowLeft } from "lucide-react-native";
 import React, { useState } from "react";
 import { RFValue } from "react-native-responsive-fontsize";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CustomText from "@/components/customText";
 import DashedLine from "@/components/DashedLine";
 import {
@@ -25,16 +25,21 @@ import {
   seatColumns,
   unavailableSeats,
 } from "@/constants/constants";
+import { Itinerary } from "@/utils/types";
+import { setMyFlights } from "@/redux/slice/sharedSlice";
 
 const SEAT_SIZE = RFValue(32);
 
 const FlightSeatSelection = () => {
+  const { flightData } = useLocalSearchParams<{ flightData: string }>();
+  const parsedFlightData: Itinerary = JSON.parse(flightData);
+  const dispatch = useDispatch();
+
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const { departingFrom, flyingTo, departureDate, returnDate, travelers } =
     useSelector((state: RootState) => state.shared);
 
   const seatRows = 29;
-
   const getSeatStatus = (row: string, col: string) => {
     const seatId = `${row}${col}`;
     if (occupiedSeats.has(seatId)) return "occupied";
@@ -314,6 +319,17 @@ const FlightSeatSelection = () => {
             <TouchableOpacity
               style={[styles.bookButton]}
               disabled={selectedSeats.length !== travelers}
+              activeOpacity={0.8}
+              onPress={() => {
+                router.navigate({
+                  pathname: "/(screens)/yourFlightDetail",
+                  params: {
+                    flightData: flightData,
+                  },
+                });
+
+                dispatch(setMyFlights(parsedFlightData));
+              }}
             >
               <CustomText variant="h4" style={[styles.bookButtonText]}>
                 Book now

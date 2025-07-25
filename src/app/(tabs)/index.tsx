@@ -53,7 +53,9 @@ const Home = () => {
         <View style={styles.header}>
           <View style={styles.locationTag}>
             <MapPin size={RFValue(14)} color={"white"} />
-            <Text style={styles.locationText}>Surabaya</Text>
+            <CustomText variant="h7" style={styles.locationText}>
+              Surabaya
+            </CustomText>
           </View>
           <View style={styles.headerRight}>
             <TouchableOpacity style={styles.notificationBtn}>
@@ -91,28 +93,26 @@ const Home = () => {
                 ]}
                 onPress={() => setTripType("oneway")}
               >
-                <Text
-                  style={[
-                    styles.tripTypeBtnText,
-                    tripType === "oneway"
-                      ? styles.tripTypeBtnTextActive
-                      : styles.tripTypeBtnTextInactive,
-                  ]}
+                <CustomText
+                  variant="h7"
+                  color="white"
+                  style={[styles.tripTypeBtnText]}
                 >
                   One way
-                </Text>
+                </CustomText>
               </TouchableOpacity>
               <TouchableOpacity
                 activeOpacity={0.8}
                 style={[
                   styles.tripTypeBtn,
                   tripType === "roundtrip"
-                    ? styles.tripTypeBtnActiveBlack
+                    ? styles.tripTypeBtnActive
                     : styles.tripTypeBtnInactive,
                 ]}
                 onPress={() => setTripType("roundtrip")}
               >
-                <Text
+                <CustomText
+                  variant="h7"
                   style={[
                     styles.tripTypeBtnText,
                     tripType === "roundtrip"
@@ -121,7 +121,7 @@ const Home = () => {
                   ]}
                 >
                   Round Trip
-                </Text>
+                </CustomText>
               </TouchableOpacity>
             </View>
 
@@ -134,12 +134,14 @@ const Home = () => {
                   aspectRatio: 1,
                   borderRadius: 100,
                   position: "absolute",
-                  backgroundColor: COLORS.darkBackground,
+                  backgroundColor: COLORS.liteGray,
                   zIndex: 1,
                   right: RFValue(10),
                   top: RFValue(34),
                   justifyContent: "center",
                   alignItems: "center",
+                  borderWidth: BORDER_WIDTH,
+                  borderColor: "#ffffff30",
                 }}
               >
                 <ArrowDownUp size={RFValue(12)} color={"white"} />
@@ -148,7 +150,7 @@ const Home = () => {
                 activeOpacity={0.8}
                 onPress={() => navigateToSearchAirport("from")}
                 style={{
-                  backgroundColor: "#f3f2f7",
+                  backgroundColor: COLORS.darkBackground,
                   padding: PADDING,
                   paddingHorizontal: PADDING * 2,
                   borderRadius: 100,
@@ -158,15 +160,23 @@ const Home = () => {
                 }}
               >
                 {!departingFrom ? (
-                  <CustomText variant="h6" style={{ opacity: 0.4 }}>
+                  <CustomText
+                    color="white"
+                    variant="h6"
+                    style={{ opacity: 0.4 }}
+                  >
                     Departing From
                   </CustomText>
                 ) : (
                   <>
-                    <CustomText variant="h8" style={{ opacity: 0.4 }}>
+                    <CustomText
+                      color="white"
+                      variant="h8"
+                      style={{ opacity: 0.4 }}
+                    >
                       From
                     </CustomText>
-                    <CustomText variant="h7">
+                    <CustomText variant="h7" color="white">
                       {departingFrom.presentation.suggestionTitle}
                     </CustomText>
                   </>
@@ -176,25 +186,33 @@ const Home = () => {
                 activeOpacity={0.8}
                 onPress={() => navigateToSearchAirport("to")}
                 style={{
-                  backgroundColor: "#f3f2f7",
                   padding: PADDING,
                   paddingHorizontal: PADDING * 2,
                   borderRadius: 100,
                   gap: 4,
                   height: RFValue(45),
                   justifyContent: "center",
+                  backgroundColor: COLORS.darkBackground,
                 }}
               >
                 {!flyingTo ? (
-                  <CustomText variant="h6" style={{ opacity: 0.4 }}>
+                  <CustomText
+                    color="white"
+                    variant="h6"
+                    style={{ opacity: 0.4 }}
+                  >
                     Flying to
                   </CustomText>
                 ) : (
                   <>
-                    <CustomText variant="h8" style={{ opacity: 0.4 }}>
+                    <CustomText
+                      color="white"
+                      variant="h8"
+                      style={{ opacity: 0.4 }}
+                    >
                       To
                     </CustomText>
-                    <CustomText variant="h7">
+                    <CustomText color="white" variant="h7">
                       {flyingTo.presentation.suggestionTitle}
                     </CustomText>
                   </>
@@ -212,22 +230,23 @@ const Home = () => {
             >
               <View
                 style={{
-                  height: 20,
+                  height: 30,
                   aspectRatio: 1,
                   backgroundColor: COLORS.darkBackground,
                   borderRadius: 100,
                 }}
               ></View>
               <DashedLine
+                backgroundColor={COLORS.liteGray}
                 style={{
-                  marginVertical: RFValue(14),
                   borderColor: "#ced4da",
+                  marginVertical: RFValue(14),
                   marginHorizontal: 2,
                 }}
               />
               <View
                 style={{
-                  height: 20,
+                  height: 30,
                   aspectRatio: 1,
                   backgroundColor: COLORS.darkBackground,
                   borderRadius: 100,
@@ -250,7 +269,7 @@ const Home = () => {
                     });
                   }}
                   style={{
-                    backgroundColor: "#f3f2f7",
+                    backgroundColor: COLORS.darkBackground,
                     padding: PADDING,
                     paddingHorizontal: PADDING * 2,
                     borderRadius: 100,
@@ -258,10 +277,14 @@ const Home = () => {
                     flex: 1,
                   }}
                 >
-                  <CustomText variant="h8" style={{ opacity: 0.4 }}>
+                  <CustomText
+                    variant="h8"
+                    color="white"
+                    style={{ opacity: 0.4 }}
+                  >
                     Departure Date
                   </CustomText>
-                  <CustomText variant="h7">
+                  <CustomText color="white" variant="h7">
                     {formatDate(departureDate)}
                   </CustomText>
                 </TouchableOpacity>
@@ -276,7 +299,7 @@ const Home = () => {
                       });
                     }}
                     style={{
-                      backgroundColor: "#f3f2f7",
+                      backgroundColor: COLORS.darkBackground,
                       padding: PADDING,
                       paddingHorizontal: PADDING * 2,
                       borderRadius: 100,
@@ -284,10 +307,14 @@ const Home = () => {
                       flex: 1,
                     }}
                   >
-                    <CustomText variant="h8" style={{ opacity: 0.4 }}>
+                    <CustomText
+                      variant="h8"
+                      color="white"
+                      style={{ opacity: 0.4 }}
+                    >
                       Return Date
                     </CustomText>
-                    <CustomText variant="h7">
+                    <CustomText variant="h7" color="white">
                       {formatDate(returnDate)}
                     </CustomText>
                   </TouchableOpacity>
@@ -296,7 +323,7 @@ const Home = () => {
               <View style={{ flexDirection: "row", flex: 1, gap: 10 }}>
                 <View
                   style={{
-                    backgroundColor: "#f3f2f7",
+                    backgroundColor: COLORS.darkBackground,
                     padding: PADDING,
                     paddingHorizontal: PADDING * 2,
                     borderRadius: 100,
@@ -304,14 +331,20 @@ const Home = () => {
                     flex: 1,
                   }}
                 >
-                  <CustomText variant="h8" style={{ opacity: 0.4 }}>
+                  <CustomText
+                    variant="h8"
+                    color="white"
+                    style={{ opacity: 0.4 }}
+                  >
                     Passengers
                   </CustomText>
-                  <CustomText variant="h7">{travelers} Seats</CustomText>
+                  <CustomText variant="h7" color="white">
+                    {travelers} Seats
+                  </CustomText>
                 </View>
                 <View
                   style={{
-                    backgroundColor: "#f3f2f7",
+                    backgroundColor: COLORS.darkBackground,
                     padding: PADDING,
                     paddingHorizontal: PADDING * 2,
                     borderRadius: 100,
@@ -319,10 +352,16 @@ const Home = () => {
                     flex: 1,
                   }}
                 >
-                  <CustomText variant="h8" style={{ opacity: 0.4 }}>
+                  <CustomText
+                    variant="h8"
+                    color="white"
+                    style={{ opacity: 0.4 }}
+                  >
                     Seat Class
                   </CustomText>
-                  <CustomText variant="h7">Economy</CustomText>
+                  <CustomText variant="h7" color="white">
+                    Economy
+                  </CustomText>
                 </View>
               </View>
             </View>
@@ -382,7 +421,6 @@ const styles = StyleSheet.create({
   },
   locationText: {
     color: "white",
-    fontSize: 14,
   },
   headerRight: {
     flexDirection: "row",
@@ -422,7 +460,7 @@ const styles = StyleSheet.create({
     marginBottom: RFValue(10),
   },
   bookingForm: {
-    backgroundColor: "white",
+    backgroundColor: COLORS.liteGray,
     borderRadius: RFValue(20),
     padding: PADDING,
   },
@@ -439,19 +477,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   tripTypeBtnActive: {
-    borderColor: "#000",
-    backgroundColor: "white",
+    borderColor: "#fff",
+    // backgroundColor: "white",
   },
   tripTypeBtnActiveBlack: {
     borderColor: "#000",
     backgroundColor: "#000",
   },
   tripTypeBtnInactive: {
-    borderColor: "#ddd",
-    backgroundColor: "#f3f2f7",
+    borderColor: COLORS.darkBackground,
+    backgroundColor: COLORS.darkBackground,
   },
   tripTypeBtnText: {
-    fontSize: 14,
     fontWeight: "500",
   },
   tripTypeBtnTextActive: {
@@ -461,7 +498,8 @@ const styles = StyleSheet.create({
     color: "white",
   },
   tripTypeBtnTextInactive: {
-    color: "#666",
+    color: "#fff",
+    opacity: 0.6,
   },
 });
 

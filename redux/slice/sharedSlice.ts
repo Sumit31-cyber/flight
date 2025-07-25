@@ -1,4 +1,4 @@
-import { AirportData } from "@/utils/types";
+import { AirportData, Itinerary } from "@/utils/types";
 import { createSlice } from "@reduxjs/toolkit";
 
 const today = new Date().toISOString();
@@ -12,6 +12,7 @@ interface InitialState {
   departureDate: string;
   returnDate: string;
   travelers: number;
+  myFlights: Itinerary[] | null;
 }
 
 const initialState: InitialState = {
@@ -20,10 +21,11 @@ const initialState: InitialState = {
   departureDate: today,
   returnDate: returnDate,
   travelers: 1,
+  myFlights: null,
 };
 
 const sharedSlice = createSlice({
-  name: "cart",
+  name: "shared",
   initialState,
   reducers: {
     setDepartingFrom: (state, action) => {
@@ -48,6 +50,23 @@ const sharedSlice = createSlice({
         state.travelers -= 1;
       }
     },
+    setMyFlights: (state, action) => {
+      const existingItemIndex = state.myFlights?.findIndex(
+        (item) => item.id == action.payload.id
+      );
+
+      if (existingItemIndex === -1) {
+        if (state.myFlights) {
+          state.myFlights = [action.payload, ...state.myFlights];
+        } else {
+          state.myFlights = action.payload;
+        }
+      }
+    },
+
+    clearMyFlights: (state, action) => {
+      state.myFlights = [];
+    },
   },
 });
 
@@ -57,6 +76,8 @@ export const {
   setDepartureDate,
   setReturnDate,
   updateTravelerCount,
+  setMyFlights,
+  clearMyFlights,
 } = sharedSlice.actions;
 
 // Export the reducer

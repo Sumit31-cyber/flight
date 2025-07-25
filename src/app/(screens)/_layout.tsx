@@ -7,6 +7,7 @@ export default function Layout() {
       <Stack.Screen name="datePicker" />
       <Stack.Screen name="searchFlightScreen" />
       <Stack.Screen name="flightSeatSelection" />
+      <Stack.Screen name="yourFlightDetail" />
     </Stack>
   );
 }

@@ -95,6 +95,7 @@ const SearchAirport = () => {
           </CustomText>
           <TextInput
             placeholder={`Country, city or airport`}
+            autoFocus
             onChangeText={(value) => {
               setSearching(true);
               setQuery(value);

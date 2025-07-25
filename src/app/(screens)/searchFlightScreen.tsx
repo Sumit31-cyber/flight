@@ -3,7 +3,6 @@ import {
   FlatList,
   SafeAreaView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -22,6 +21,7 @@ import { RFValue } from "react-native-responsive-fontsize";
 import { MaterialIcons } from "@expo/vector-icons";
 import { formatDate } from "@/utils/sharedFunctions";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import FlightCard from "@/components/FlightCard";
 
 const SearchFlightScreen = () => {
   const { returnDate, departureDate, travelers, departingFrom, flyingTo } =
@@ -76,105 +76,9 @@ const SearchFlightScreen = () => {
     getFlights();
   }, []);
 
-  const formatTime = (dateTimeString: string) => {
-    const date = new Date(dateTimeString);
-    return date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-  };
-
-  // Helper function to format duration
-  const formatDuration = (minutes: number) => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return `${hours}h ${mins}m`;
-  };
-
-  // Helper function to get stop info
-  const getStopInfo = (stopCount: number) => {
-    if (stopCount === 0) return "Non-stop";
-    if (stopCount === 1) return "1 stop";
-    return `${stopCount} stops`;
-  };
-
-  const renderFlightItem = ({ item }: { item: Itinerary }) => {
-    const leg = item.legs[0]; // Assuming single leg for now
-    const carrier = leg.carriers.marketing[0];
-
-    return (
-      <TouchableOpacity style={styles.flightCard} activeOpacity={0.8}>
-        {/* Header with airline info and price */}
-        <View style={styles.flightHeader}>
-          <View style={styles.airlineInfo}>
-            <Image
-              source={{ uri: carrier.logoUrl }}
-              style={styles.airlineLogo}
-              contentFit="contain"
-            />
-            <Text style={styles.airlineName}>{carrier.name}</Text>
-          </View>
-          <View style={styles.priceContainer}>
-            <Text style={styles.price}>{item.price.formatted}</Text>
-            {item.tags && item.tags.includes("cheapest") && (
-              <View style={styles.tag}>
-                <Text style={styles.tagText}>Cheapest</Text>
-              </View>
-            )}
-          </View>
-        </View>
-
-        {/* Flight details */}
-        <View style={styles.flightDetails}>
-          <View style={styles.timeContainer}>
-            <Text style={styles.time}>{formatTime(leg.departure)}</Text>
-            <Text style={styles.airport}>{leg.origin.displayCode}</Text>
-            <Text style={styles.city}>{leg.origin.city}</Text>
-          </View>
-
-          <View style={styles.flightPath}>
-            <Text style={styles.duration}>
-              {formatDuration(leg.durationInMinutes)}
-            </Text>
-            <View style={styles.pathLine}>
-              <View style={styles.dot} />
-              <DashedLine style={{ borderColor: COLORS.gray }} />
-              <View style={styles.dot} />
-            </View>
-            <Text style={styles.stops}>{getStopInfo(leg.stopCount)}</Text>
-          </View>
-
-          <View style={styles.timeContainer}>
-            <Text style={styles.time}>{formatTime(leg.arrival)}</Text>
-            <Text style={styles.airport}>{leg.destination.displayCode}</Text>
-            <Text style={styles.city}>{leg.destination.city}</Text>
-          </View>
-        </View>
-
-        {/* Additional info */}
-        {leg.stopCount > 0 && leg.segments && (
-          <View style={styles.segmentInfo}>
-            <Text style={styles.segmentText}>
-              Via {leg.segments[0].destination.name}
-            </Text>
-          </View>
-        )}
-      </TouchableOpacity>
-    );
-  };
-
-  if (searching && !flightResponse) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator color={"white"} />
-      </View>
-    );
-  }
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.darkBackground }}>
-      <View style={{ padding: PADDING, marginBottom: bottom }}>
+      <View style={{ padding: PADDING, marginBottom: bottom, flex: 1 }}>
         <View
           style={{
             height: HEADER_HEIGHT,
@@ -192,101 +96,122 @@ const SearchFlightScreen = () => {
           </CustomText>
         </View>
 
-        <FlatList
-          data={flightResponse?.data.itineraries}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            <View
-              style={{
-                flexDirection: "row",
-                // alignItems: "center",
-                // justifyContent: "space-between",
-                marginVertical: PADDING,
-                flex: 1,
-              }}
-            >
-              {/* <View style={{ backgroundColor: "red", flex: 1, height: 50 }} />
-              <View style={{ backgroundColor: "green", flex: 1, height: 50 }} />
-              <View style={{ backgroundColor: "blue", flex: 1, height: 50 }} /> */}
-              <View style={{ flex: 1 }}>
-                <CustomText variant="h4" color="white">
-                  {departingFrom?.skyId}
-                </CustomText>
-                <CustomText variant="h7" color="white" style={{ opacity: 0.8 }}>
-                  {departingFrom?.navigation.localizedName},
-                  {departingFrom?.presentation.subtitle}
-                </CustomText>
-              </View>
+        {searching ? (
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <ActivityIndicator color={"white"} />
+          </View>
+        ) : (
+          <FlatList
+            data={flightResponse?.data.itineraries}
+            showsVerticalScrollIndicator={false}
+            ListHeaderComponent={
               <View
                 style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginTop: 10,
-
+                  flexDirection: "row",
+                  marginVertical: PADDING,
                   flex: 1,
                 }}
               >
-                <View style={{ width: RFValue(90) }}>
-                  <DashedLine
-                    backgroundColor={COLORS.darkBackground}
-                    style={{
-                      borderColor: "#ced4da",
-                    }}
-                  />
-                  <View
-                    style={{
-                      height: 20,
-                      aspectRatio: 1,
-                      borderRadius: 100,
-                      backgroundColor: "white",
-                      position: "absolute",
-                      alignSelf: "center",
-                      top: -8,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
+                <View style={{ flex: 1 }}>
+                  <CustomText variant="h4" color="white">
+                    {departingFrom?.skyId}
+                  </CustomText>
+                  <CustomText
+                    variant="h7"
+                    color="white"
+                    style={{ opacity: 0.8 }}
                   >
-                    <View style={{ transform: [{ rotate: "90deg" }] }}>
-                      <MaterialIcons
-                        name="flight"
-                        size={RFValue(10)}
-                        color={"black"}
-                      />
+                    {departingFrom?.navigation.localizedName},
+                    {departingFrom?.presentation.subtitle}
+                  </CustomText>
+                </View>
+                <View
+                  style={{
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginTop: 10,
+                    flex: 1,
+                  }}
+                >
+                  <View style={{ width: RFValue(90) }}>
+                    <DashedLine
+                      backgroundColor={COLORS.darkBackground}
+                      style={{
+                        borderColor: "#ced4da",
+                      }}
+                    />
+                    <View
+                      style={{
+                        height: 20,
+                        aspectRatio: 1,
+                        borderRadius: 100,
+                        backgroundColor: "white",
+                        position: "absolute",
+                        alignSelf: "center",
+                        top: -8,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <View style={{ transform: [{ rotate: "90deg" }] }}>
+                        <MaterialIcons
+                          name="flight"
+                          size={RFValue(10)}
+                          color={"black"}
+                        />
+                      </View>
                     </View>
                   </View>
+                  <CustomText
+                    variant="h8"
+                    color="white"
+                    style={{ marginTop: 14, opacity: 0.6 }}
+                  >
+                    {formatDate(departureDate)}
+                  </CustomText>
                 </View>
-                <CustomText
-                  variant="h8"
-                  color="white"
-                  style={{ marginTop: 14, opacity: 0.6 }}
-                >
-                  {formatDate(departureDate)}
-                </CustomText>
-              </View>
 
-              <View
-                style={{
-                  alignItems: "flex-end",
-                  flex: 1,
-                }}
-              >
-                <CustomText variant="h4" color="white">
-                  {flyingTo?.skyId}
-                </CustomText>
-                <CustomText
-                  variant="h7"
-                  color="white"
-                  style={{ opacity: 0.8, flex: 1 }}
-                  numberOfLines={1}
+                <View
+                  style={{
+                    alignItems: "flex-end",
+                    flex: 1,
+                  }}
                 >
-                  {flyingTo?.navigation.localizedName},
-                  {flyingTo?.presentation.subtitle}
-                </CustomText>
+                  <CustomText variant="h4" color="white">
+                    {flyingTo?.skyId}
+                  </CustomText>
+                  <CustomText
+                    variant="h7"
+                    color="white"
+                    style={{ opacity: 0.8, flex: 1 }}
+                    numberOfLines={1}
+                  >
+                    {flyingTo?.navigation.localizedName},
+                    {flyingTo?.presentation.subtitle}
+                  </CustomText>
+                </View>
               </View>
-            </View>
-          }
-          renderItem={renderFlightItem}
-        />
+            }
+            renderItem={({ item, index }) => {
+              return (
+                <FlightCard
+                  key={index}
+                  flightData={item}
+                  onPress={() => {
+                    router.navigate({
+                      pathname: "/(screens)/flightSeatSelection",
+                      params: {
+                        flightData: encodeURIComponent(JSON.stringify(item)),
+                      },
+                    });
+                  }}
+                />
+              );
+            }}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -1538,136 +1463,3 @@ export default SearchFlightScreen;
 //       "https://content.skyscnr.com/m/3719e8f4a5daf43d/original/Flights-Placeholder.jpg",
 //   },
 // };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
-  },
-  header: {
-    fontSize: 18,
-    fontWeight: "bold",
-    padding: 16,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
-  },
-  listContainer: {
-    padding: 16,
-  },
-  flightCard: {
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    padding: 16,
-    marginBottom: 12,
-  },
-  flightHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  airlineInfo: {
-    flexDirection: "row",
-    alignItems: "center",
-    flex: 1,
-  },
-  airlineLogo: {
-    width: 24,
-    height: 24,
-    marginRight: 8,
-  },
-  airlineName: {
-    fontSize: 14,
-    color: "#666",
-    flex: 1,
-  },
-  priceContainer: {
-    alignItems: "flex-end",
-  },
-  price: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#2196F3",
-  },
-  tag: {
-    backgroundColor: "#4CAF50",
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-    marginTop: 4,
-  },
-  tagText: {
-    color: "#fff",
-    fontSize: 10,
-    fontWeight: "bold",
-  },
-  flightDetails: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  timeContainer: {
-    alignItems: "center",
-    flex: 1,
-  },
-  time: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
-  },
-  airport: {
-    fontSize: 12,
-    color: "#666",
-    marginTop: 2,
-  },
-  city: {
-    fontSize: 10,
-    color: "#999",
-    marginTop: 1,
-  },
-  flightPath: {
-    alignItems: "center",
-    flex: 2,
-    paddingHorizontal: 16,
-  },
-  duration: {
-    fontSize: 12,
-    color: "#666",
-    marginBottom: 4,
-  },
-  pathLine: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-    marginVertical: 4,
-  },
-  dot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: "#2196F3",
-  },
-  line: {
-    flex: 1,
-    height: 1,
-    backgroundColor: "#ddd",
-    marginHorizontal: 4,
-  },
-  stops: {
-    fontSize: 10,
-    color: "#999",
-    marginTop: 2,
-  },
-  segmentInfo: {
-    marginTop: 12,
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: "#f0f0f0",
-  },
-  segmentText: {
-    fontSize: 12,
-    color: "#666",
-    textAlign: "center",
-  },
-});
